@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Producto</title>
+</head>
+<body>
+    <h1>Agregar Nuevo Producto</h1>
+    <form id="productForm">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="nombre"><br><br>
+        <label for="price">Precio:</label>
+        <input type="text" id="price" name="precio" placeholder="$"><br><br>
+        <label for="weight">Peso:</label>
+        <input type="text" id="weight" name="peso" placeholder="kg"><br><br>
+        <label for="description">Descripción:</label><br>
+        <textarea id="description" name="descripcion"></textarea><br><br>
+        <input type="submit" value="Agregar Producto">
+    </form>
+
+    <script>
+        document.getElementById("productForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch("http://127.0.0.1:5000/api/inventory", {
+                method: "POST",
+                body: JSON.stringify(Object.fromEntries(formData)),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Error al agregar el producto.');
+                }
+            })
+            .then(data => {
+                alert(data.message);
+                // Limpiar el formulario después de agregar el producto
+                this.reset();
+            })
+            .catch(error => {
+                alert(error.message);
+                console.error("Error:", error);
+            });
+        });
+    </script>
+</body>
+</html>

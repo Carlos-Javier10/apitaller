@@ -1,0 +1,4 @@
+1.- instalar la libreria
+2.- ejecutar python api.py
+3.- revisar el servidor
+4.- usar las vistas

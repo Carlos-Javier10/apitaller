@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar Producto</title>
+</head>
+<body>
+    <h1>Actualizar Producto</h1>
+    <form id="updateProductForm">
+        <label for="productId">ID del Producto:</label>
+        <input type="text" id="productId" name="productId"><br><br>
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="nombre"><br><br>
+        <label for="price">Precio:</label>
+        <input type="text" id="price" name="precio"><br><br>
+        <label for="weight">Peso:</label>
+        <input type="text" id="weight" name="peso"><br><br>
+        <label for="description">Descripción:</label><br>
+        <textarea id="description" name="descripcion"></textarea><br><br>
+        <input type="submit" value="Actualizar Producto">
+    </form>
+
+    <script>
+        document.getElementById("updateProductForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const productId = formData.get("productId");
+            fetch(`http://127.0.0.1:5000/api/inventory/${productId}`, {
+                method: "PUT",
+                body: JSON.stringify(Object.fromEntries(formData)),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Error al actualizar el producto.');
+                }
+            })
+            .then(data => {
+                alert(data.message);
+                // Limpiar el formulario después de actualizar el producto
+                this.reset();
+            })
+            .catch(error => {
+                alert(error.message);
+                console.error("Error:", error);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar Producto</title>
+</head>
+<body>
+    <h1>Eliminar Producto</h1>
+    <form id="deleteProductForm">
+        <label for="productId">ID del Producto:</label>
+        <input type="text" id="productId" name="productId"><br><br>
+        <input type="submit" value="Eliminar Producto">
+    </form>
+
+    <script>
+        document.getElementById("deleteProductForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const productId = document.getElementById("productId").value;
+            fetch(`http://127.0.0.1:5000/api/inventory/${productId}`, {
+                method: "DELETE"
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Error al eliminar el producto.');
+                }
+            })
+            .then(data => {
+                alert(data.message);
+                // Limpiar el formulario después de eliminar el producto
+                document.getElementById("productId").value = "";
+            })
+            .catch(error => {
+                alert(error.message);
+                console.error("Error:", error);
+            });
+        });
+    </script>
+</body>
+</html>

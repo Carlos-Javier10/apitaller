@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Productos</title>
+</head>
+<body>
+    <h1>Inventario de Productos</h1>
+    <button id="searchButton">Buscar</button>
+    <table id="productTable" style="display: none;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Peso</th>
+                <th>Descripción</th>
+            </tr>
+        </thead>
+        <tbody id="productList">
+            <!-- Los productos se cargarán aquí dinámicamente -->
+        </tbody>
+    </table>
+
+    <script>
+        const searchButton = document.getElementById("searchButton");
+        searchButton.addEventListener("click", () => {
+            fetch("http://127.0.0.1:5000/api/inventory")
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Error al obtener el inventario.');
+                    }
+                })
+                .then(data => {
+                    const productList = document.getElementById("productList");
+                    const productTable = document.getElementById("productTable");
+                    productList.innerHTML = ""; // Limpiar la lista antes de agregar productos nuevos
+                    Object.entries(data).forEach(([productId, product]) => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${productId}</td>
+                            <td>${product.nombre}</td>
+                            <td>${product.precio}</td>
+                            <td>${product.peso}</td>
+                            <td>${product.descripcion}</td>
+                        `;
+                        productList.appendChild(row);
+                    });
+                    productTable.style.display = "table"; // Mostrar la tabla cuando se carguen los productos
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        });
+    </script>
+</body>
+</html>
